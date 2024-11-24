@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "electronics-shop-59148",
+    "amazon-clone": "electronics-shop-59148"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
+}
