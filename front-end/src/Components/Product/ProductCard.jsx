@@ -31,7 +31,7 @@ function ProductCard({ product, flex, renderDesc, renderAdd, renderTitle }) {
         <div className={classes.rating}>
           <Rating value={rating?.rate} precision={0.1} />
           <small>{rating?.count}</small>
-          {discount && <small className={classes.discount}>discount: {discount}</small> }
+          {<small className={classes.discount}>discount: {discount}</small> }
         </div>
         <div>
           <CurrencyFormat amount={price} />
