@@ -40,7 +40,7 @@ The project is structured into two main directories: `backend` and `front-end`.
 │   │   ├── Router.jsx# React Router configuration
 │   ├── vite.config.js# Configuration for Vite build tool
 │
-├── .gitignore      # Specifies intentionally untracked files that Git should ignore
+├── Readme.md      # Project documentation
 ```
 
 
