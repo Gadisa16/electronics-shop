@@ -12,9 +12,36 @@ This repository contains a full-stack e-commerce application with a React front-
 
 ## Project Structure
 
-## .├── backend/ │ ├── .env │ ├── .gitignore │ ├── index.js │ ├── package.json
-## .├── front-end/ │ ├── .env │ ├── .eslintrc.cjs │ ├── .firebaserc │ ├── .gitignore │ ├── firebase.json │ ├── index.html │ ├── package.json │ ├── public/ │ ├── src/ │ │ ├── API/ │ │ ├── Components/ │ │ ├── Pages/ │ │ ├── Utility/ │ │ ├── App.jsx │ │ ├── main.jsx │ │ ├── Router.jsx │ ├── vite.config.js ├── .gitignore
+The project is structured into two main directories: `backend` and `front-end`.
 
+```
+├── backend/        # Express.js backend
+│   ├── .env        # Environment variables
+│   ├── .gitignore  # Specifies intentionally untracked files that Git should ignore
+│   ├── index.js    # Main entry point for the backend server
+│   ├── package.json# Lists project dependencies and scripts
+│
+├── front-end/      # React frontend
+│   ├── .env        # Environment variables
+│   ├── .eslintrc.cjs # Configuration for ESLint
+│   ├── .firebaserc  # Firebase project configuration file
+│   ├── .gitignore  # Specifies intentionally untracked files that Git should ignore
+│   ├── firebase.json# Firebase hosting configuration file
+│   ├── index.html  # Main HTML file
+│   ├── package.json# Lists project dependencies and scripts
+│   ├── public/     # Static assets
+│   ├── src/        # React source code
+│   │   ├── API/      # API interaction files
+│   │   ├── Components/ # Reusable React components
+│   │   ├── Pages/    # React pages/views
+│   │   ├── Utility/  # Utility functions
+│   │   ├── App.jsx   # Main application component
+│   │   ├── main.jsx  # Entry point for React
+│   │   ├── Router.jsx# React Router configuration
+│   ├── vite.config.js# Configuration for Vite build tool
+│
+├── .gitignore      # Specifies intentionally untracked files that Git should ignore
+```
 
 
 ## Technologies
@@ -34,5 +61,5 @@ This repository contains a full-stack e-commerce application with a React front-
 1. Clone the repository:
 
 ```sh
-git clone https://github.com/your-username/e-commerce-app.git
+git clone https://github.com/Gadisa16/electronics-shop.git
 cd e-commerce-app
