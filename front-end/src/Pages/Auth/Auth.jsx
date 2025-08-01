@@ -18,11 +18,11 @@ function Auth() {
   });
   const [{ user }, dispatch] = useContext(DataContext);
   const navigate = useNavigate();
-  const navStateData = useLocation();
+  const navStateData = useLocation(); //to get or consume the state data from the previous page
 
   const authHandler = async (e) => {
     e.preventDefault();
-    
+    //signing in
     if (e.target.name === "signin") {
       setLoading({ ...loading, signIn: true });
       signInWithEmailAndPassword(auth, email, password)
@@ -39,7 +39,9 @@ function Auth() {
         .finally(() => {
           setLoading({ ...loading, signIn: false });
         });
-    } else {
+    }
+    //signing up
+    else {
       setLoading({ ...loading, signUp: true });
       createUserWithEmailAndPassword(auth, email, password)
         .then((userInfo) => {

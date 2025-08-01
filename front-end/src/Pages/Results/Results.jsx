@@ -1,16 +1,16 @@
-import React,{useEffect,useState} from 'react'
-import Layout from "../../Components/Layout/Layout"
-import ProductCard from "../../Components/Product/ProductCard"
-import classes from "./results.module.css"
-import {useParams} from 'react-router-dom'
-import axios from 'axios'
-import {productUrl} from '../../API/endPoints'
-import Loader from '../../Components/Loader/Loader'
+import React,{ useEffect, useState } from 'react';
+import Layout from "../../Components/Layout/Layout";
+import ProductCard from "../../Components/Product/ProductCard";
+import classes from "./results.module.css";
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { productUrl } from '../../API/endPoints';
+import Loader from '../../Components/Loader/Loader';
 
 function Results() {
-  const [results, setResults]=useState([]);
-  const {categoryName}= useParams();
-  const [isLoading, setIsLoading]= useState(false);
+  const [results, setResults] = useState([]);
+  const { categoryName } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(()=>{
     setIsLoading(true)

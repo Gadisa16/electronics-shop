@@ -15,25 +15,26 @@ function Payment() {
   const [{ user, basket }, dispatch] = useContext(DataContext);
   const [cardError, setCardError] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const stripe = useStripe(); //to access stripe instance
+  const elements = useElements(); //to access stripe elements
+  const navigate = useNavigate();
 
+  //total # product in basket
   const totalItem = basket?.reduce((amount, item) => {
     return amount + item.amount;
   }, 0);
 
+  //total price of all product in basket
   const total = basket.reduce((amount, item) => {
     return amount + item.price * item.amount;
   }, 0);
 
-  const stripe = useStripe();
-  const elements = useElements();
-  const navigate = useNavigate();
 
 
   const handleChange = (e) => {
     e?.error?.message ? setCardError(e?.error?.message) : setCardError("");
   };
 
-  
   const handlePayment = async (e) => {
     e.preventDefault();
 
@@ -52,20 +53,25 @@ function Payment() {
         method: "POST",
         url: `/payment/create?total=${total * 100}`,
       });
-
+      // console.log(response)
       const clientSecret = response.data?.clientSecret;
 
-      const { paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement),
         },
       });
-      // console.log(paymentIntent);
+      
+      if (error) {
+        setCardError(error.message);
+        setProcessing(false);
+        return;
+      }
 
       await db.collection("users").doc(user.uid).collection("orders").doc(paymentIntent.id).set({
         basket: basket,
         amount: paymentIntent.amount,
-        created: paymentIntent.created,
+        created: paymentIntent.created, //timestamp or unix time
       });
 
       dispatch({ type: Type.EMPTY_BASKET });
@@ -78,12 +84,14 @@ function Payment() {
     }
   };
 
+
   // style for spinner
   const load_style={
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   }
+
 
   return (
     <Layout>

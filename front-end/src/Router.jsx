@@ -26,6 +26,7 @@ function Routing() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/auth" element={<Auth />} />
+        
         <Route
           path="/payments"
           element={
@@ -54,8 +55,8 @@ function Routing() {
 
         <Route path="/category/:categoryName" element={<Results />} />
         <Route path="/products/:productId" element={<ProductDetail />} />
-
         <Route path="/cart" element={<Cart />} />
+
       </Routes>
     </Router>
   );
