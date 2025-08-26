@@ -1,7 +1,7 @@
 import React from 'react';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { img } from './img/data';
+import { img } from './data';
 import classes from './CarouselEffect.module.css';
 
 function CarouselEffect() {
@@ -12,11 +12,16 @@ function CarouselEffect() {
         infiniteLoop={true}
         showIndicators={false}
         showThumbs={false}>
-
         {
-            img.map((imageItemLink)=>{
-              return <img key={imageItemLink} src={imageItemLink} style={{height:"500px"}}/>
-            })
+          img.map((imageItemLink, idx) => (
+            <img
+              key={imageItemLink}
+              src={imageItemLink}
+              style={{height:"500px"}}
+              alt="carousel image"
+              loading={idx === 0 ? "eager" : "lazy"}
+            />
+          ))
         }
       </Carousel>
       {/* background overlay */}

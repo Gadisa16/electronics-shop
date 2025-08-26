@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { DataContext } from '../DataProvider/DataProvider';
 import { auth } from '../../Utility/firebase';
 import logo_img from "/logo1.png";
+import logo_img_webp from "/logo1.webp";
 
 function Header() {
     const [{ user, basket }, dispatch] = useContext(DataContext);
@@ -25,10 +26,11 @@ function Header() {
             <div className={classes.logo_container}>
                 {/* Logo */}
                 <Link to="/" className={classes.main_logo}>
-                <img
-                    src={logo_img}
-                    alt="e-commerce logo"
-                />
+                <picture>
+                    <source srcSet={logo_img_webp} type="image/webp"/>
+                    <img src={logo_img} alt="website's logo"/>
+                </picture>
+
                 </Link>
 
                 <div className={classes.delivery}>
