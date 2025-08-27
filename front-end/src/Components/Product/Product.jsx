@@ -1,42 +1,47 @@
-import React, {useEffect,useState} from 'react';
-import axios from 'axios';
-import ProductCard from "./ProductCard";
-import classes from "./Product.module.css";
+import React, { useContext, memo } from 'react';
+import PropTypes from 'prop-types';
+import ProductCard from './ProductCard';
+import classes from './Product.module.css';
 import Loader from '../Loader/Loader';
-import { productUrl } from '../../API/endPoints';
+import { DataContext } from '../DataProvider/DataProvider';
 
-function Product() {
-    const [products,setProducts]=useState([])
-    const [isLoading, setIsLoading]= useState(false);
+const Product = memo(() => {
+  const [{ filteredProducts, products, error, loading, searchTerm }] = useContext(DataContext);
+  const displayProducts = filteredProducts.length > 0 ? filteredProducts : products;
+  
+  console.log("here is products: ", displayProducts);
 
-    useEffect(()=>{
-      axios.get(`${productUrl}/products`)
-      .then((res)=>{
-          // console.log(res)
-          setProducts(res.data.products);
-          setIsLoading(false)
-      })
-      .catch((err)=>{
-          console.log(err);
-          setIsLoading(false)
-      })
-    },[])
+  // Utility function to highlight matched text
+  const highlightText = (text, searchTerm) => {
+    if (!searchTerm || !text) return text;
+    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    return text.replace(regex, '<span class="highlight">$1</span>');
+  };
 
+  if (error) {
+    return <div className={classes.error}>Error: {error}</div>;
+  }
 
   return (
-    <>
-    {
-      isLoading ? (<Loader/>) :
-      ( <section className={classes.products_container}>
-        {
-            products?.map((singleProduct)=>{
-              return  <ProductCard renderAdd={true} product={singleProduct} key={singleProduct.id}/>
-                  })
-        }
-        </section>)
-    }
-    </>
-  )
-}
+    <section className={classes.products_container} id="products_id">
+      {loading ? (
+        <Loader />
+      ) : (
+        displayProducts?.map(product => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            renderAdd={true}
+            highlightedTitle={highlightText(product.title, searchTerm)}
+          />
+        ))
+      )}
+    </section>
+  );
+});
 
-export default Product
+Product.propTypes = {
+  // Add any props if needed in the future
+};
+
+export default Product;

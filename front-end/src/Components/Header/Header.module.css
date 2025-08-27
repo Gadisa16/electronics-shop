@@ -65,6 +65,11 @@
     overflow: hidden;
     width: 70%;
     flex: 1;
+    height: 37px;
+}
+
+.search :is(button, svg, input, select) {
+    height: 100%;
 }
 
 .search select {
@@ -75,7 +80,11 @@
     border: none;
     background-color: #f3f3f3;
     border-right: 1px solid #ccc;
+    cursor: pointer;
+}
 
+.search select option {
+    cursor: pointer;
 }
 
 .search input{

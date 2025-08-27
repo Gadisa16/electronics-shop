@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useMemo, useEffect } from 'react';
 import { BsSearch } from 'react-icons/bs';
 import { SlLocationPin } from 'react-icons/sl';
 import { BiCart } from 'react-icons/bi';
@@ -9,14 +9,69 @@ import { DataContext } from '../DataProvider/DataProvider';
 import { auth } from '../../Utility/firebase';
 import logo_img from "/logo1.png";
 import logo_img_webp from "/logo1.webp";
+import { Type } from '../../Utility/action.type';
+import debounce from 'lodash.debounce';
+
+const CATEGORIES = [
+    { value: '', label: 'All' },
+    { value: 'Mobile', label: 'Mobile' },
+    { value: 'Gaming', label: 'Gaming' },
+    { value: 'TV', label: 'TV' },
+    { value: 'Audio', label: 'Audio' },
+    { value: 'Laptop', label: 'Laptop' },
+    { value: 'Appliances', label: 'Appliances' },
+];
 
 function Header() {
     const [{ user, basket }, dispatch] = useContext(DataContext);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [category, setCategory] = useState('');
 
     // Calculate the total number of items in the basket
     const totalItem = basket?.reduce((amount, item) => {
         return item.amount + amount;
     }, 0);
+
+    //handle search and filter
+    // const handleSearch = (e) => {
+    //     e.preventDefault();
+    //     dispatch({
+    //         type: Type.FILTER_PRODUCTS,
+    //         payload: { searchTerm, category },
+    //     });
+    // };
+
+    // Debounced search handler
+    const debouncedSearch = useMemo(() =>
+        debounce((term, cat) => {
+            dispatch({
+                type: Type.FILTER_PRODUCTS,
+                payload: { searchTerm: term.trim(), category: cat },
+            });
+        }, 300),
+        [dispatch]
+    );
+
+    // Handle search input changes
+    const handleSearchChange = (e) => {
+        const newSearchTerm = e.target.value;
+        setSearchTerm(newSearchTerm);
+        debouncedSearch(newSearchTerm, category);
+    };
+
+    // Handle category changes
+    const handleCategoryChange = (e) => {
+        const newCategory = e.target.value;
+        setCategory(newCategory);
+        debouncedSearch(searchTerm, newCategory);
+    };
+
+    // Clean up debounce on unmount
+    useEffect(() => {
+        return () => {
+            debouncedSearch.cancel();
+        };
+    }, [debouncedSearch]);
 
 
     return (
@@ -47,19 +102,28 @@ function Header() {
             </div>
 
             <div className={classes.search}>
-                {/* Search bar */}
-                <select name="" id="">
-                    <option value="">All</option>
-                    <option value="">Mobile</option>
-                    <option value="">Gaming</option>
-                    <option value="">TV</option>
-                    <option value="">Audio</option>
-                    <option value="">Laptop</option>
-                    <option value="">Appliances</option>
+                <select
+                value={category}
+                onChange={handleCategoryChange}
+                aria-label="Select product category"
+                >
+                {CATEGORIES.map((cat) => (
+                    <option className={classes.option_style} key={cat.value} value={cat.value}>
+                    {cat.label}
+                    </option>
+                ))}
                 </select>
-                <input type="text" name="" id="" placeholder="Search product" />
-                {/* Search icon */}
-                <BsSearch size={38} />
+                <input
+                    type="text"
+                    placeholder="Search product"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    aria-label="Search products"
+                />
+
+                <button style={{ background: "none", border: "none" }}>
+                    <BsSearch size={38} />
+                </button>
             </div>
 
             <div className={classes.order_container}>
@@ -112,5 +176,9 @@ function Header() {
         </section>
     );
 }
+
+Header.propTypes = {
+  // props if needed in the future
+};
 
 export default Header;

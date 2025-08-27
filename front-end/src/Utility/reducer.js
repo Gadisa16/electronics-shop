@@ -2,7 +2,10 @@ import { Type } from './action.type';
 
 export const initialState = {
     basket: [],
-    user: null
+    user: null,
+    products: [],           // All products
+    filteredProducts: [],    // Filtered products for search/filter
+    error: null,
 };
 
 export const reducer = (state, action) => {
@@ -53,6 +56,38 @@ export const reducer = (state, action) => {
                 ...state,
                 user: action.user
             };
+
+        case Type.SET_PRODUCTS:
+            // Set all products (e.g., after fetching from API)
+            return {
+                ...state,
+                products: action.products,
+                filteredProducts: action.products,
+                error: null
+            };
+
+        case Type.FILTER_PRODUCTS: {
+            const { searchTerm, category } = action.payload || {};
+            let filtered = [...state.products];
+
+            if (category) {
+                filtered = filtered.filter(product =>
+                    product?.category?.toLowerCase() === category.toLowerCase()
+                );
+            }
+            if (searchTerm) {
+                filtered = filtered.filter(product =>
+                    product?.title?.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+            return {
+                ...state,
+                filteredProducts: filtered
+            };
+        }
+
+        case Type.SET_ERROR:
+            return { ...state, error: action.error };
 
         default:
             return state;

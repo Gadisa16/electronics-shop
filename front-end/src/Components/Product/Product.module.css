@@ -101,6 +101,10 @@
   height: auto;
 }
 
+.highlight {
+  background-color: #ffeb3b;
+}
+
 @media screen and (max-width: 768px) {
   .product_flexed {
     display: flex;
