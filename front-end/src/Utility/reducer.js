@@ -6,6 +6,8 @@ export const initialState = {
     products: [],           // All products
     filteredProducts: [],    // Filtered products for search/filter
     error: null,
+    loading: false,
+    searchTerm: ''          // added (Product.jsx reads this)
 };
 
 export const reducer = (state, action) => {
@@ -82,12 +84,16 @@ export const reducer = (state, action) => {
             }
             return {
                 ...state,
-                filteredProducts: filtered
+                filteredProducts: filtered,
+                searchTerm: searchTerm || '' // keep searchTerm in state
             };
         }
 
         case Type.SET_ERROR:
             return { ...state, error: action.error };
+        
+        case Type.SET_LOADING:
+            return { ...state, loading: !!action.loading };
 
         default:
             return state;

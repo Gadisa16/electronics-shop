@@ -1,20 +1,22 @@
-import React from "react";
+import React, { Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   redirect,
 } from "react-router-dom";
-import Landing from "./Pages/Landing/Landing";
-import Auth from "./Pages/Auth/Auth";
-import Payment from "./Pages/Payment/Payment";
-import Orders from "./Pages/Orders/Orders";
-import Cart from "./Pages/Cart/Cart";
-import Results from "./Pages/Results/Results";
-import ProductDetail from "./Pages/ProductDetail/ProductDetail";
+
+const Landing = React.lazy(() => import("./Pages/Landing/Landing"));
+const Auth = React.lazy(() => import("./Pages/Auth/Auth"));
+const Payment = React.lazy(() => import("./Pages/Payment/Payment"));
+const Orders = React.lazy(() => import("./Pages/Orders/Orders"));
+const Cart = React.lazy(() => import("./Pages/Cart/Cart"));
+const Results = React.lazy(() => import("./Pages/Results/Results"));
+const ProductDetail = React.lazy(() => import("./Pages/ProductDetail/ProductDetail"));
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
+import Loader from "./Components/Loader/Loader";
 
 const stripePromise = loadStripe(
   "pk_test_51PhrNMFVOXeE6RGqDP32c8BbIrtRbWmzwZ0We2kY0YN8gJlVIeaeum0Da1KCMOpVKWu8lZdqh9y4TZJeDEVieiXZ00WFA0eJIY"
@@ -23,6 +25,7 @@ const stripePromise = loadStripe(
 function Routing() {
   return (
     <Router>
+      <Suspense fallback = {<Loader />}>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/auth" element={<Auth />} />
@@ -58,6 +61,7 @@ function Routing() {
         <Route path="/cart" element={<Cart />} />
 
       </Routes>
+      </Suspense>
     </Router>
   );
 }

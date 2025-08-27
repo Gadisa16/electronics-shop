@@ -5,7 +5,7 @@ import Loader from '../Loader/Loader';
 import { DataContext } from '../DataProvider/DataProvider';
 
 const Product = memo(() => {
-  const [{ filteredProducts, products, error, loading, searchTerm }] = useContext(DataContext);
+  const [{ filteredProducts, products, error, searchTerm }] = useContext(DataContext);
   let displayProducts = products;
 
   if (filteredProducts.length > 0){
@@ -31,18 +31,16 @@ const Product = memo(() => {
 
   return (
     <section className={classes.products_container} id="products_id">
-      {loading ? (
-        <Loader />
-      ) : (
-        displayProducts?.map(product => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            renderAdd={true}
-            highlightedTitle={highlightText(product.title, searchTerm)}
-          />
-        ))
-      )}
+      {
+      displayProducts?.map(product => (
+        <ProductCard
+          key={product.id}
+          product={product}
+          renderAdd={true}
+          highlightedTitle={highlightText(product.title, searchTerm)}
+        />
+      ))
+      }
     </section>
   );
 });

@@ -10,12 +10,15 @@ const DataProvider = ({ children, reducer, initialState }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const fetchProducts = useCallback(async () => {
+    dispatch({ type: Type.SET_LOADING, loading: true });
     try {
       const response = await axios.get(`${productUrl}/products`);
       dispatch({ type: Type.SET_PRODUCTS, products: response.data.products });
+      dispatch({ type: Type.SET_LOADING, loading: false });
     } catch (error) {
       console.error('Failed to fetch products:', error);
       dispatch({ type: Type.SET_ERROR, error: error.message || 'Failed to load products' });
+      dispatch({ type: Type.SET_LOADING, loading: false });
     }
   }, [productUrl]);
 
@@ -26,7 +29,7 @@ const DataProvider = ({ children, reducer, initialState }) => {
   {/*
     - The dependency array [state, dispatch] tells React:
     “Only re-run this function and create a new array if state or dispatch changes.”
-    - This way, components consuming DataContext won’t re-render unnecessarily
+    - This way, components consuming DataContext will not re-render unnecessarily
     when the context value remains the same.
 */}
   const value = useMemo(() => [state, dispatch], [state, dispatch]);
