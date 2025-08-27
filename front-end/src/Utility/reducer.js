@@ -62,7 +62,7 @@ export const reducer = (state, action) => {
             return {
                 ...state,
                 products: action.products,
-                filteredProducts: action.products,
+                filteredProducts: [],
                 error: null
             };
 

@@ -18,7 +18,7 @@ function CarouselEffect() {
               key={imageItemLink}
               src={imageItemLink}
               style={{height:"500px"}}
-              alt="carousel image"
+              alt="carousel"
               loading={idx === 0 ? "eager" : "lazy"}
             />
           ))

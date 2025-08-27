@@ -1,6 +1,5 @@
 // Results.jsx
 import React, { useContext, useEffect, memo } from 'react';
-import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import Layout from '../../Components/Layout/Layout';
 import ProductCard from '../../Components/Product/ProductCard';
@@ -50,9 +49,5 @@ const Results = memo(() => {
     </Layout>
   );
 });
-
-Results.propTypes = {
-  // Add any props if needed in the future
-};
 
 export default Results;

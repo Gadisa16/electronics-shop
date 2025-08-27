@@ -1,5 +1,4 @@
 import React, { useContext, memo } from 'react';
-import PropTypes from 'prop-types';
 import ProductCard from './ProductCard';
 import classes from './Product.module.css';
 import Loader from '../Loader/Loader';
@@ -7,7 +6,15 @@ import { DataContext } from '../DataProvider/DataProvider';
 
 const Product = memo(() => {
   const [{ filteredProducts, products, error, loading, searchTerm }] = useContext(DataContext);
-  const displayProducts = filteredProducts.length > 0 ? filteredProducts : products;
+  let displayProducts = products;
+
+  if (filteredProducts.length > 0){
+    displayProducts = filteredProducts;
+    const container = document.getElementById('products_id');
+    if (container) {
+      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
   
   console.log("here is products: ", displayProducts);
 
@@ -39,9 +46,5 @@ const Product = memo(() => {
     </section>
   );
 });
-
-Product.propTypes = {
-  // Add any props if needed in the future
-};
 
 export default Product;

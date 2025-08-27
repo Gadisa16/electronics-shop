@@ -7,29 +7,30 @@ import { DataContext } from '../DataProvider/DataProvider';
 import { Type } from '../../Utility/action.type';
 import PropTypes from 'prop-types';
 
-function ProductCard({ product, flex, renderDesc, renderAdd, renderTitle, highlightedTitle }) {
-  const { image, title, id, price, rating, description, brand, color, discount = 0 } = product;
-  const [state, dispatch] = useContext(DataContext);
+const ProductCard = React.memo(
+  function ProductCard({ product, flex, renderDesc, renderAdd, renderTitle, highlightedTitle }) {
+    const { image, title, id, price, rating, description, brand, color, discount = 0 } = product;
+    const [state, dispatch] = useContext(DataContext);
 
-  const [imgSrc, setImgSrc] = useState(image);
-  const [errorOccurred, setErrorOccurred] = useState(false); // Track if error happened to prevent retry loops
+    const [imgSrc, setImgSrc] = useState(image);
+    const [errorOccurred, setErrorOccurred] = useState(false); // Track if error happened to prevent retry loops
 
-  const addToCart = () => {
-    dispatch({
-      type: Type.ADD_TO_BASKET,
-      item: { image, title, id, price, description, brand, color, discount },
-    });
-  };
+    const addToCart = () => {
+      dispatch({
+        type: Type.ADD_TO_BASKET,
+        item: { image, title, id, price, description, brand, color, discount },
+      });
+    };
 
-  const handleImageError = () => {
-    if (!errorOccurred) {
-      setImgSrc('/product_placeholder.avif'); // Fall back to placeholder
-      setErrorOccurred(true); // Prevent infinite retries if placeholder also fails (unlikely)
-    }
-  };
+    const handleImageError = () => {
+      if (!errorOccurred) {
+        setImgSrc('/product_placeholder.avif'); // Fall back to placeholder
+        setErrorOccurred(true); // Prevent infinite retries if placeholder also fails (unlikely)
+      }
+    };
 
-  console.log("imageeeee",image);
-
+    console.log("imageeeee", image);
+    
   return (
     <div className={`${classes.card_container} ${flex ? classes.product_flexed : ''}`}>
       <Link to={`/products/${id}`}>
@@ -67,7 +68,7 @@ function ProductCard({ product, flex, renderDesc, renderAdd, renderTitle, highli
       </div>
     </div>
   );
-};
+});
 
 ProductCard.propTypes = {
   product: PropTypes.object.isRequired,

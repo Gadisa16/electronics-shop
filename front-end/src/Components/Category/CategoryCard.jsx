@@ -1,6 +1,7 @@
-import React from 'react'
-import classes from "./category.module.css"
-import { Link } from 'react-router-dom'
+import React from 'react';
+import classes from "./category.module.css";
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 function CategoryCard({data}) {
   // console.log("category", data);
@@ -15,6 +16,14 @@ function CategoryCard({data}) {
       </Link>
     </div>
   )
+}
+
+CategoryCard.prototypes = {
+  data: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    imgLink: PropTypes.string.isRequired,
+  }).isRequired,
 }
 
 export default CategoryCard

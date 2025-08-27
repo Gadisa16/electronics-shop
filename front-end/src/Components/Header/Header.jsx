@@ -44,6 +44,7 @@ function Header() {
     // Debounced search handler
     const debouncedSearch = useMemo(() =>
         debounce((term, cat) => {
+            console.log("from debounce", term, cat)
             dispatch({
                 type: Type.FILTER_PRODUCTS,
                 payload: { searchTerm: term.trim(), category: cat },
