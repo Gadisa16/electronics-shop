@@ -7,19 +7,39 @@ import classes from './results.module.css';
 import Loader from '../../Components/Loader/Loader';
 import { DataContext } from '../../Components/DataProvider/DataProvider';
 import { Type } from '../../Utility/action.type';
+import ProductSkeleton from '../../Components/Skeleton/ProductSkeleton';
 
 const Results = memo(() => {
   const { categoryName } = useParams();
-  const [{ filteredProducts, loading, error }, dispatch] = useContext(DataContext);
+  const [{ filteredProducts, loading, error, products }, dispatch] = useContext(DataContext);
 
+  // Apply filter when products are available or when category changes
   useEffect(() => {
+    if (!products || products.length === 0) return;
+
     if (categoryName) {
       dispatch({
         type: Type.FILTER_PRODUCTS,
         payload: { category: categoryName, searchTerm: '' },
       });
+    } else {
+      // clear filters -> will set filteredProducts to all products
+      dispatch({
+        type: Type.FILTER_PRODUCTS,
+        payload: { category: '', searchTerm: '' },
+      });
     }
-  }, [categoryName, dispatch]);
+  }, [categoryName, products, dispatch]);
+
+  // On unmount reset filters so other pages don't keep the category filter
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: Type.FILTER_PRODUCTS,
+        payload: { category: '', searchTerm: '' },
+      });
+    };
+  }, [dispatch]);
 
   if (error) {
     return <div className={classes.error}>Error: {error}</div>;
@@ -33,7 +53,7 @@ const Results = memo(() => {
         <hr />
         <div className={classes.products_container}>
           {loading ? (
-            <Loader />
+            <ProductSkeleton />
           ) : (
             filteredProducts?.map(product => (
               <ProductCard
