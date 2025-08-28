@@ -13,7 +13,7 @@ const Landing = () => {
     <Layout>
       <Carousel />
       <Category />
-      {loading ? <ProductSkeleton first_container={true} /> : <Product />}
+      {loading ? <ProductSkeleton /> : <Product />}
     </Layout>
   );
 };

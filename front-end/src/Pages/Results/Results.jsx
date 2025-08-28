@@ -51,10 +51,10 @@ const Results = memo(() => {
         <h1 style={{ padding: '30px' }}>Results</h1>
         <p style={{ padding: '30px' }}>Category / {categoryName}</p>
         <hr />
-        <div className={classes.products_container}>
-          {loading ? (
-            <ProductSkeleton />
-          ) : (
+        {
+          loading ? ( <ProductSkeleton />) : (
+          <div className={classes.products_container}>
+            {
             filteredProducts?.map(product => (
               <ProductCard
                 key={product.id}
@@ -63,8 +63,10 @@ const Results = memo(() => {
                 renderAdd={true}
               />
             ))
-          )}
-        </div>
+            }
+          </div>
+          )
+        }
       </section>
     </Layout>
   );

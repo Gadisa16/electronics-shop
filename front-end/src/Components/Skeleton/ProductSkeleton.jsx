@@ -1,10 +1,9 @@
 import React from 'react';
 import classes from './ProductSkeleton.module.css';
-import PropTypes from 'prop-types';
 
-function ProductSkeleton({first_container = false}) {
+function ProductSkeleton() {
   return (
-    <div className={first_container ? classes.products_container : "display_none"}>
+    <div className={ classes.products_container }>
     {Array.from({ length: 6 }).map((_, idx) => (
       <div className={classes.card_container} key={`skeleton-${idx*3}`}>
         {/* Image skeleton */}
@@ -43,9 +42,5 @@ function ProductSkeleton({first_container = false}) {
     </div>
   );
 }
-
-ProductSkeleton.propTypes = {
-  first_container: PropTypes.bool,
-};
 
 export default ProductSkeleton;
