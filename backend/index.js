@@ -3,16 +3,16 @@ const cors= require("cors")
 const dotenv= require("dotenv")
 dotenv.config();
 const stripe = require("stripe")(process.env.VITE_FIREBASE_STRIPE_KEY);
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
 
 const app= express();
-app.use(cors({origin:true}));
+app.use(cors({origin: allowedOrigins}));
 
 app.get("/", (req, res) =>{
     res.status(200).json({
         message:"Hello World!",
     });
 })
-
 
 app.post("/payment/create", async(req, res) => {
     const total= parseInt(req.query.total);

@@ -8,6 +8,7 @@ import ProductCard from "../../Components/Product/ProductCard.jsx";
 function Orders() {
   const [{ user }, dispatch] = useContext(DataContext);
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);

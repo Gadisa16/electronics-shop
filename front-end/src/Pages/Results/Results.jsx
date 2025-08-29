@@ -1,10 +1,10 @@
 // Results.jsx
-import React, { useContext, useEffect, memo } from 'react';
+import React, { useContext, useEffect, memo, Suspense } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '../../Components/Layout/Layout';
-import ProductCard from '../../Components/Product/ProductCard';
+// import ProductCard from '../../Components/Product/ProductCard';
+const ProductCard = React.lazy(() => import('../../Components/Product/ProductCard'));
 import classes from './results.module.css';
-import Loader from '../../Components/Loader/Loader';
 import { DataContext } from '../../Components/DataProvider/DataProvider';
 import { Type } from '../../Utility/action.type';
 import ProductSkeleton from '../../Components/Skeleton/ProductSkeleton';
@@ -13,6 +13,7 @@ const Results = memo(() => {
   const { categoryName } = useParams();
   const [{ filteredProducts, loading, error, products }, dispatch] = useContext(DataContext);
 
+  console.log('Filtered category Products:', filteredProducts);
   // Apply filter when products are available or when category changes
   useEffect(() => {
     if (!products || products.length === 0) return;
@@ -53,18 +54,20 @@ const Results = memo(() => {
         <hr />
         {
           loading ? ( <ProductSkeleton />) : (
-          <div className={classes.products_container}>
-            {
-            filteredProducts?.map(product => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                renderDesc={false}
-                renderAdd={true}
-              />
-            ))
-            }
-          </div>
+          <Suspense fallback={<ProductSkeleton />}>
+            <div className={classes.products_container}>
+              {
+              filteredProducts?.map(product => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  renderDesc={false}
+                  renderAdd={true}
+                />
+              ))
+              }
+            </div>
+          </Suspense>
           )
         }
       </section>

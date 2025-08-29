@@ -13,14 +13,9 @@ const Orders = React.lazy(() => import("./Pages/Orders/Orders"));
 const Cart = React.lazy(() => import("./Pages/Cart/Cart"));
 const Results = React.lazy(() => import("./Pages/Results/Results"));
 const ProductDetail = React.lazy(() => import("./Pages/ProductDetail/ProductDetail"));
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 import Loader from "./Components/Loader/Loader";
-
-const stripePromise = loadStripe(
-  "pk_test_51PhrNMFVOXeE6RGqDP32c8BbIrtRbWmzwZ0We2kY0YN8gJlVIeaeum0Da1KCMOpVKWu8lZdqh9y4TZJeDEVieiXZ00WFA0eJIY"
-);
 
 function Routing() {
   return (
@@ -37,9 +32,7 @@ function Routing() {
               msg={"you must log in to pay"}
               redirect={"/payments"}
             >
-              <Elements stripe={stripePromise}>
-                <Payment />
-              </Elements>
+              <Payment />
             </ProtectedRoute>
           }
         />
@@ -48,7 +41,7 @@ function Routing() {
           path="/orders"
           element={
             <ProtectedRoute
-              msg={"you must log in to acces your orders"}
+              msg={"you must log in to access your orders"}
               redirect={"/orders"}
             >
               <Orders />

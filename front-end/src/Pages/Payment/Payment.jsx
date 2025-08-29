@@ -1,149 +1,52 @@
-import React, { useContext, useState } from 'react';
-import Layout from "../../Components/Layout/Layout";
-import classes from './payment.module.css';
-import { DataContext } from "../../Components/DataProvider/DataProvider";
-import ProductCard from "../../Components/Product/ProductCard";
-import CurrencyFormat from '../../Components/CurrencyFormat/CurrencyFormat';
-import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
-import { axiosInstance } from '../../API/axios';
-import { ScaleLoader } from "react-spinners";
-import { db } from '../../Utility/firebase';
-import { useNavigate } from 'react-router-dom';
-import { Type } from '../../Utility/action.type';
+import React, { useState, useEffect, Suspense } from 'react';
+import Loader from "../../Components/Loader/Loader";
+
+// Lazy-load PaymentForm (its Stripe hook imports will be code-split)
+const PaymentForm = React.lazy(() => import('./PaymentForm'));
 
 function Payment() {
-  const [{ user, basket }, dispatch] = useContext(DataContext);
-  const [cardError, setCardError] = useState(null);
-  const [processing, setProcessing] = useState(false);
-  const stripe = useStripe(); //to access stripe instance
-  const elements = useElements(); //to access stripe elements
-  const navigate = useNavigate();
+  const [stripePromise, setStripePromise] = useState(null);
+  const [ElementsModule, setElementsModule] = useState(null);
 
-  //total # product in basket
-  const totalItem = basket?.reduce((amount, item) => {
-    return amount + item.amount;
-  }, 0);
-
-  //total price of all product in basket
-  const total = basket.reduce((amount, item) => {
-    return amount + item.price * item.amount;
-  }, 0);
-
-
-
-  const handleChange = (e) => {
-    e?.error?.message ? setCardError(e?.error?.message) : setCardError("");
-  };
-
-  const handlePayment = async (e) => {
-    e.preventDefault();
-
-    try {
-      setProcessing(true);
-
-      if (!user) {
-        throw new Error("User is not authenticated");
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const [stripeJs, stripeReact] = await Promise.all([
+          import('@stripe/stripe-js'),
+          import('@stripe/react-stripe-js'),
+        ]);
+        if (!mounted) return;
+        const loadStripe = stripeJs.loadStripe;
+        const key = import.meta.env.VITE_STRIPE_PK;
+        if (!key) console.warn('VITE_STRIPE_PK is not set in .env');
+        setStripePromise(loadStripe(key));
+        setElementsModule(stripeReact);
+      } catch (err) {
+        console.error('Failed to load Stripe libs', err);
       }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
-      if (!stripe) {
-        throw new Error("Stripe is not initialized");
-      }
-
-      const response = await axiosInstance({
-        method: "POST",
-        url: `/payment/create?total=${total * 100}`,
-      });
-      // console.log(response)
-      const clientSecret = response.data?.clientSecret;
-
-      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardElement),
-        },
-      });
-      
-      if (error) {
-        setCardError(error.message);
-        setProcessing(false);
-        return;
-      }
-
-      await db.collection("users").doc(user.uid).collection("orders").doc(paymentIntent.id).set({
-        basket: basket,
-        amount: paymentIntent.amount,
-        created: paymentIntent.created, //timestamp or unix time
-      });
-
-      dispatch({ type: Type.EMPTY_BASKET });
-
-      setProcessing(false);
-      navigate("/orders", { state: { msg: "You have placed a new order" } });
-    } catch (error) {
-      console.error(error);
-      setProcessing(false);
-    }
-  };
-
-
-  // style for spinner
-  const load_style={
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-
+  const Elements = ElementsModule?.Elements;
 
   return (
-    <Layout>
-      <div className={classes.payment_header}>Checkout {totalItem} items</div>
-
-      <section className={classes.payment}>
-        <div className={classes.flex}>
-          <h3>Delivery Address</h3>
-          <div>
-            <div>{user?.email}</div>
-            <div>123 React Lane</div>
-            <div>Chicago, IL</div>
-          </div>
+    <>
+      {!Elements || !stripePromise ? (
+        <div style={{ minHeight: 200 }}>
+          <Loader />
         </div>
-        <hr />
-
-        <div className={classes.flex}>
-          <h3>Review items and delivery</h3>
-          <div>
-            {basket?.map((item) => <ProductCard key={item.id} product={item} flex={true} />)}
-          </div>
-        </div>
-        <hr />
-
-        <div className={classes.flex}>
-          <h3>Payment methods</h3>
-          <div className={classes.payment_card_container}>
-            <div className={classes.payment_details}>
-              <form onSubmit={handlePayment}>
-                {cardError && <small style={{ color: "red" }}>{cardError}</small>}
-                <CardElement onChange={handleChange} />
-                <div className={classes.payment_price}>
-                  <div>
-                    <span style={{ display: "flex", gap: "10px" }}>
-                      <p>Total Order |</p> <CurrencyFormat amount={total} />
-                    </span>
-                  </div>
-                  <button type='submit'>
-                    {processing ? (
-                      <div className={classes.loading}>
-                        <ScaleLoader color="yellow" height={10} style={load_style}/>
-                        <p>Please Wait ...</p>
-                      </div>
-                    ) : "Pay Now"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
-    </Layout>
+      ) : (
+        <Elements stripe={stripePromise}>
+          <Suspense fallback={<Loader />}>
+            <PaymentForm />
+          </Suspense>
+        </Elements>
+      )}
+    </>
   );
 }
 

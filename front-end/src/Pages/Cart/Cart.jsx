@@ -35,7 +35,22 @@ const Cart = () => {
           <h3>Your shopping basket</h3>
           <hr />
           {basket?.length === 0 ? (
-            <p>OOPS! your cart is empty</p>
+          <div className={classes.emptyCart}>
+            <div className={classes.cartContainer}>
+              <img 
+                src="./empty_cart.avif" 
+                alt="Empty Cart" 
+                className={classes.cartImage}
+              />
+              <div className={classes.chainDecoration}></div>
+            </div>
+            <p className={classes.emptyMessage}>
+              OOPS! Your cart is empty
+            </p>
+            <Link to="/" className={classes.addToCartBtn}>
+                Add Items Now
+            </Link>
+          </div>
           ) : (
             basket.map((item, i) => (
               <section key={i} className={classes.cart_product}>
