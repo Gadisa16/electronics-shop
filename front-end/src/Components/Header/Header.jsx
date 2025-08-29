@@ -178,8 +178,4 @@ function Header() {
     );
 }
 
-Header.propTypes = {
-  // props if needed in the future
-};
-
 export default Header;

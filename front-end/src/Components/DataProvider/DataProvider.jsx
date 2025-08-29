@@ -7,7 +7,20 @@ import { productUrl } from '../../API/endPoints';
 export const DataContext = createContext();
 
 const DataProvider = ({ children, reducer, initialState }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  // initializer to hydrate state from localStorage (only basket here)
+  const init = (initState) => {
+    try {
+      const persisted = localStorage.getItem('basket');
+      if (persisted) {
+        return { ...initState, basket: JSON.parse(persisted) };
+      }
+    } catch (err) {
+      console.warn('Failed to parse persisted basket', err);
+    }
+    return initState;
+  };
+
+  const [state, dispatch] = useReducer(reducer, initialState, init);
 
   const fetchProducts = useCallback(async () => {
     dispatch({ type: Type.SET_LOADING, loading: true });
@@ -20,18 +33,21 @@ const DataProvider = ({ children, reducer, initialState }) => {
       dispatch({ type: Type.SET_ERROR, error: error.message || 'Failed to load products' });
       dispatch({ type: Type.SET_LOADING, loading: false });
     }
-  }, [productUrl]);
+  }, []);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
-  {/*
-    - The dependency array [state, dispatch] tells React:
-    “Only re-run this function and create a new array if state or dispatch changes.”
-    - This way, components consuming DataContext will not re-render unnecessarily
-    when the context value remains the same.
-*/}
+  // persist basket whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('basket', JSON.stringify(state.basket || []));
+    } catch (err) {
+      console.warn('Failed to persist basket', err);
+    }
+  }, [state.basket]);
+
   const value = useMemo(() => [state, dispatch], [state, dispatch]);
 
   return (
