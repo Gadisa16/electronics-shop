@@ -4,7 +4,7 @@ import classes from './ProductSkeleton.module.css';
 function ProductSkeleton() {
   return (
     <div className={ classes.products_container }>
-    {Array.from({ length: 6 }).map((_, idx) => (
+    {[...Array(12)].map((_, idx) => (
       <div className={classes.card_container} key={`skeleton-${idx*3}`}>
         {/* Image skeleton */}
         <div className={`${classes.skeleton_img}  skeleton`} />

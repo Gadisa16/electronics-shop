@@ -1,50 +1,28 @@
-// Results.jsx
-import React, { useContext, useEffect, memo, Suspense } from 'react';
+import React, { useEffect, useState, memo, Suspense } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '../../Components/Layout/Layout';
-// import ProductCard from '../../Components/Product/ProductCard';
 const ProductCard = React.lazy(() => import('../../Components/Product/ProductCard'));
+import { productUrl } from '../../API/endPoints';
+import axios from 'axios';
 import classes from './results.module.css';
-import { DataContext } from '../../Components/DataProvider/DataProvider';
-import { Type } from '../../Utility/action.type';
 import ProductSkeleton from '../../Components/Skeleton/ProductSkeleton';
 
 const Results = memo(() => {
   const { categoryName } = useParams();
-  const [{ filteredProducts, loading, error, products }, dispatch] = useContext(DataContext);
+  const [categoryProducts, setCategoryProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  console.log('Filtered category Products:', filteredProducts);
-  // Apply filter when products are available or when category changes
-  useEffect(() => {
-    if (!products || products.length === 0) return;
-
-    if (categoryName) {
-      dispatch({
-        type: Type.FILTER_PRODUCTS,
-        payload: { category: categoryName, searchTerm: '' },
-      });
-    } else {
-      // clear filters -> will set filteredProducts to all products
-      dispatch({
-        type: Type.FILTER_PRODUCTS,
-        payload: { category: '', searchTerm: '' },
-      });
-    }
-  }, [categoryName, products, dispatch]);
-
-  // On unmount reset filters so other pages don't keep the category filter
-  useEffect(() => {
-    return () => {
-      dispatch({
-        type: Type.FILTER_PRODUCTS,
-        payload: { category: '', searchTerm: '' },
-      });
-    };
-  }, [dispatch]);
-
-  if (error) {
-    return <div className={classes.error}>Error: {error}</div>;
-  }
+  useEffect( () => {
+    setIsLoading(true)
+    axios.get(`${productUrl}/products/category?type=${categoryName}`).then((res)=>{
+      // console.log(res)
+      setCategoryProducts(res.data.products)
+      setIsLoading(false)
+    })
+    .catch((err)=>{
+      console.log(err)
+      setIsLoading(false)
+    })}, []);
 
   return (
     <Layout>
@@ -53,11 +31,11 @@ const Results = memo(() => {
         <p style={{ padding: '30px' }}>Category / {categoryName}</p>
         <hr />
         {
-          loading ? ( <ProductSkeleton />) : (
+          isLoading ? ( <ProductSkeleton />) : (
           <Suspense fallback={<ProductSkeleton />}>
             <div className={classes.products_container}>
               {
-              filteredProducts?.map(product => (
+              categoryProducts?.map(product => (
                 <ProductCard
                   key={product.id}
                   product={product}
