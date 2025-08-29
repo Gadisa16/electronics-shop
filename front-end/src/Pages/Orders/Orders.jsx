@@ -34,7 +34,6 @@ function Orders() {
   //onSnapshot method to provide real-time updates
   //snapshot object contains an array of orders
 
-
   return (
     <Layout>
       <section className={classes.container}>

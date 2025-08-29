@@ -42,8 +42,7 @@ function Routing() {
           element={
             <ProtectedRoute
               msg={"you must log in to access your orders"}
-              redirect={"/orders"}
-            >
+              redirect={"/orders"}>
               <Orders />
             </ProtectedRoute>
           }
