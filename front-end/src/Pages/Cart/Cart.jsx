@@ -60,6 +60,7 @@ const Cart = () => {
                   renderAdd={false}
                   flex={true}
                   renderTitle={true}
+                  hoverScale={1.005}
                 />
                 <div className={classes.btn_container}>
                   <button className={classes.btn} onClick={() => increment(item)}>

@@ -93,7 +93,8 @@
 }
 
 .product_flexed {
-  height: 50vh;
+  /* height: 50vh; */
+  height: auto;
 }
 
 .product_flexed img {

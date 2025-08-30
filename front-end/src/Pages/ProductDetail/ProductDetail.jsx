@@ -38,6 +38,7 @@ function ProductDetail() {
           renderDesc={true}
           renderAdd={true}
           renderTitle={true}
+          hoverScale = {1.005}
         />
       )}
     </Layout>

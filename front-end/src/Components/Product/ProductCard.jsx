@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom';
 import { DataContext } from '../DataProvider/DataProvider';
 import { Type } from '../../Utility/action.type';
 import PropTypes from 'prop-types';
+import MotionCard from '../Animation/MotionCard';
 
 const ProductCard = React.memo(
-  function ProductCard({ product, flex, renderDesc, renderAdd, renderTitle, highlightedTitle }) {
+  function ProductCard({ product, flex, renderDesc, renderAdd, renderTitle, highlightedTitle, hoverScale = 1.03 }) {
     const { image, title, id, price, rating, description, brand, color, discount = 0 } = product;
     const [state, dispatch] = useContext(DataContext);
 
@@ -32,7 +33,7 @@ const ProductCard = React.memo(
     console.log("imageeeee", image);
     
   return (
-    <div className={`${classes.card_container} ${flex ? classes.product_flexed : ''}`}>
+    <MotionCard className={`${classes.card_container} ${flex ? classes.product_flexed : ''}`} hoverScale={hoverScale}>
       <Link to={`/products/${id}`}>
       <img
           src={imgSrc}
@@ -66,7 +67,7 @@ const ProductCard = React.memo(
           </button>
         )}
       </div>
-    </div>
+    </MotionCard>
   );
 });
 
@@ -77,6 +78,7 @@ ProductCard.propTypes = {
   renderAdd: PropTypes.bool,
   renderTitle: PropTypes.bool,
   highlightedTitle: PropTypes.string,
+  hoverScale: PropTypes.number,
 };
 
 export default ProductCard;
