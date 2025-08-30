@@ -173,7 +173,7 @@ function Header() {
             </div>
             </div>
         </section>
-        {/* <LowerHeader /> */}
+        <LowerHeader />
         </section>
     );
 }
