@@ -7,6 +7,7 @@ import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { axiosInstance } from '../../API/axios';
 import { ScaleLoader } from "react-spinners";
 import { db } from '../../Utility/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { Type } from '../../Utility/action.type';
 import Layout from "../../Components/Layout/Layout";
@@ -44,14 +45,14 @@ function PaymentForm() {
             card: elements.getElement(CardElement),
             },
         });
-        
+
         if (error) {
             setCardError(error.message);
             setProcessing(false);
             return;
         }
 
-        await db.collection("users").doc(user.uid).collection("orders").doc(paymentIntent.id).set({
+        await setDoc(doc(db, 'users', user.uid, 'orders', paymentIntent.id), {
             basket: basket,
             amount: paymentIntent.amount,
             created: paymentIntent.created,

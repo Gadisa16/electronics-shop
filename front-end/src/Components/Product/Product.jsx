@@ -3,9 +3,11 @@ import ProductCard from './ProductCard';
 import classes from './Product.module.css';
 import Loader from '../Loader/Loader';
 import { DataContext } from '../DataProvider/DataProvider';
+import ProductNotFound from '../Error/ProductNotFound';
 
 const Product = memo(() => {
   const [{ filteredProducts, products, error, searchTerm }] = useContext(DataContext);
+  console.log("i am here", error);
   let displayProducts = products;
 
   if (filteredProducts.length > 0){
@@ -26,7 +28,7 @@ const Product = memo(() => {
   };
 
   if (error) {
-    return <div className={classes.error}>Error: {error}</div>;
+    return (<ProductNotFound error={error} />)
   }
 
   return (

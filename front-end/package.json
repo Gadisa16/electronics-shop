@@ -17,7 +17,7 @@
     "@stripe/react-stripe-js": "^2.7.1",
     "@stripe/stripe-js": "^3.5.0",
     "axios": "^1.7.2",
-    "firebase": "^10.12.2",
+    "firebase": "^12.2.1",
     "framer-motion": "^12.23.12",
     "lodash.debounce": "^4.0.8",
     "numeral": "^2.0.6",
